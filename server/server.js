@@ -19,7 +19,7 @@ app.post('/todos',(req,res)=>{
     todo.save().then((doc)=>{
         res.send(doc);
     },(err)=>{
-        res.status(404).send(err);
+        res.status(400).send(err);
     })
 });
 
@@ -39,3 +39,5 @@ app.post('/users',(req,res)=>{
 app.listen('3000',()=>{
     console.log('Server started and listening @ port 3000');
 });
+
+module.exports = {app}
