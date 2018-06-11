@@ -27,18 +27,18 @@ app.post('/todos',(req,res)=>{
     })
 });
 
-app.post('/users',(req,res)=>{
-    var user = new User({
-        email: req.body.email
-    });
+// app.post('/users',(req,res)=>{
+//     var user = new User({
+//         email: req.body.email
+//     });
 
-    user.save().then((doc)=>{
-        res.send(doc);
-    },(err)=>{
-        res.send(err);
-    });
+//     user.save().then((doc)=>{
+//         res.send(doc);
+//     },(err)=>{
+//         res.send(err);
+//     });
 
-})
+// })
 
 app.get('/todos',(req,res)=>{
     Todo.find().then((todos)=>{
@@ -118,6 +118,19 @@ app.patch('/todos/:id',(req,res)=>{
 
 })
 
+app.post('/users',(req,res)=>{
+    var user = _.pick(req.body,['email','password']);
+    var userObj = new User(user);
+    
+    userObj.save().then(()=>{
+        return userObj.generateAuthToken();
+        //res.send(doc);
+    }).then((token)=>{
+        res.header('x-auth',token).send(userObj); 
+    }).catch((err)=>{
+        res.status(400).send(err);
+    });
+});
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server started and listening @ port ${process.env.PORT}`);
